@@ -11,6 +11,9 @@ define([
     commands.register({
         id: "settings.open",
         title: "Settings: Open",
+        shortcuts: [
+            "mod+,"
+        ],
         run: function(args, context) {
             return codebox.tabs.add(Tab, {
                 model: manager
