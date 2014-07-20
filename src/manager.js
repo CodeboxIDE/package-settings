@@ -42,7 +42,7 @@ define([
         // Import
         importJSON: function(data) {
             this.schemas.each(function(schema) {
-                schama.data.set(data[schema.id] || {});
+                schema.data.set(data[schema.id] || {});
             });
         },
 
