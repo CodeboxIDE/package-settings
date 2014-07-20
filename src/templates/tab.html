@@ -1,0 +1,14 @@
+<% models.each(function(model) { %>
+<div class="model">
+    <div class="title">
+        <h3><%- model.get("title") %></h3>
+    </div>
+    <div class="fields">
+    <% _.each(model.get("fields"), function(field) { %>
+        <div class="field">
+            <div class="label"><%- field.label %></div>
+        </div>
+    <% }); %>
+    </div>
+</div>
+<% }); %>
