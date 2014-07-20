@@ -30,8 +30,18 @@ define(function() {
             schema: {}
         },
 
+        initialize: function() {
+            Schema.__super__.initialize.apply(this, arguments);
+
+            this.data = new hr.Model();
+        },
+
         getDefaults: function(schema) {
             return _getDefaults(this.get("schema"));
+        },
+
+        getData: function() {
+            return _.extend({}, this.getDefaults(), this.data.toJSON());
         }
     });
 

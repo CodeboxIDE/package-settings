@@ -5,9 +5,7 @@ define([
     var hr = codebox.require("hr/hr");
     var File = codebox.require("models/file");
 
-    var Manager = hr.Model.extend({
-        defaults: {},
-
+    var Manager = hr.Class.extend({
         initialize: function() {
             Manager.__super__.initialize.apply(this, arguments);
 
@@ -18,28 +16,7 @@ define([
         schema: function(id, infos) {
             var that = this;
 
-            if (!infos) {
-                var normKey = function(key) {
-                    if (!key) return id;
-                    return id+"."+key;
-                };
-
-                return {
-                    get: function(key, def) {
-                        return that.get(normKey(key), def);
-                    },
-                    set: function(key, value) {
-                        return that.set(normKey(key), value);
-                    },
-                    change: function(key, func) {
-                        if (!func) {
-                            key = null;
-                            func = key;
-                        }
-                        that.on("change:"+normKey(key), func);
-                    }
-                };
-            }
+            if (!infos) return this.schemas.get(id);
 
             this.schemas.add({
                 'id': id,
@@ -56,16 +33,32 @@ define([
                 this.schemas.map(function(schema) {
                     return [
                         schema.id,
-                        _.extend({}, schema.getDefaults(), that.get(schema.id) || {})
+                        schema.getData()
                     ];
                 })
             );
         },
 
+        // Import
+        importJSON: function(data) {
+            this.schemas.each(function(schema) {
+                schama.data.set(data[schema.id] || {});
+            });
+        },
+
         // Get file
         getFile: function() {
+            // Generate the string content
             var code = JSON.stringify(this.exportJson(), null, 4);
+
+            // Build the file buffer
             var f = File.buffer("Codebox Settings.json", code, "codebox-settings.json");
+
+            // Handle write operations
+            this.listenTo(f, "write", function(data) {
+                this.importJSON(JSON.parse(data));
+            });
+
             return f;
         }
     });
