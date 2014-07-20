@@ -13,7 +13,8 @@ define([
 
         templateContext: function() {
             return {
-                models: this.model.models
+                models: this.model.models,
+                values: this.model.toJSON()
             };
         }
     });

@@ -38,9 +38,11 @@ define(function() {
                 };
             }
 
-            this.models.add(_.extend({}, infos, {
-                'id': id
-            }));
+            this.models.add({
+                'id': id,
+                'title': infos.title,
+                'sections': _.flatten([infos.fields])
+            });
 
             return this.model(id);
         }
