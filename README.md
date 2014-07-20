@@ -1,4 +1,3 @@
-package-settings
-================
+# Settings Manager
 
-Settings UI
+This package contains the settings manager for Codebox.
