@@ -1,35 +1,52 @@
 .component-settings {
-    overflow: auto;
-    padding: 10px 20px;
     position: absolute;
     top: 0px;
     bottom: 0px;
     right: 0px;
     left: 0px;
 
-    .model {
-        padding: 15px 0px;
-        border-bottom: 1px solid rgba(0,0,0, 0.1);
-        .clearfix();
+    .inner {
+        padding: 10px 20px;
+        overflow: auto;
+        position: absolute;
+        top: 0px;
+        bottom: 42px;
+        right: 0px;
+        left: 0px;
 
-        .title {
-            width: 25%;
-            float: left;
+        .model {
+            padding: 15px 0px;
+            border-bottom: 1px solid rgba(0,0,0, 0.1);
+            .clearfix();
 
-            h3 {
-                margin-top: 0px;
+            .title {
+                width: 25%;
+                float: left;
+
+                h3 {
+                    margin-top: 0px;
+                }
+            }
+
+            .fields {
+                width: 75%;
+                float: right;
+
+                .field {
+                    background: rgba(0,0,0,0.04);
+                    margin-bottom: 15px;
+                    padding: 10px;
+                }
             }
         }
+    }
 
-        .fields {
-            width: 75%;
-            float: right;
-
-            .field {
-                background: rgba(0,0,0,0.04);
-                margin-bottom: 15px;
-                padding: 10px;
-            }
-        }
+    .toolbar {
+        background: @color-1;
+        position:absolute;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        padding: 10px 20px;
     }
 }
