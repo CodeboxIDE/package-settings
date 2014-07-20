@@ -1,6 +1,9 @@
-define(function() {
+define([
+    "src/schema"
+], function(Schema) {
     var _ = codebox.require("hr/utils");
     var hr = codebox.require("hr/hr");
+    var File = codebox.require("models/file");
 
     var Manager = hr.Model.extend({
         defaults: {},
@@ -8,11 +11,11 @@ define(function() {
         initialize: function() {
             Manager.__super__.initialize.apply(this, arguments);
 
-            this.models = new hr.Collection();
+            this.schemas = new (hr.Collection.extend({ model: Schema }));
         },
 
-        // Add/Get a model
-        model: function(id, infos) {
+        // Add/Get a schema
+        schema: function(id, infos) {
             var that = this;
 
             if (!infos) {
@@ -38,13 +41,32 @@ define(function() {
                 };
             }
 
-            this.models.add({
+            this.schemas.add({
                 'id': id,
-                'title': infos.title,
-                'sections': _.flatten([infos.fields])
+                'schema': infos
             });
 
-            return this.model(id);
+            return this.schema(id);
+        },
+
+        // Export
+        exportJson: function() {
+            var that = this;
+            return _.object(
+                this.schemas.map(function(schema) {
+                    return [
+                        schema.id,
+                        _.extend({}, schema.getDefaults(), that.get(schema.id) || {})
+                    ];
+                })
+            );
+        },
+
+        // Get file
+        getFile: function() {
+            var code = JSON.stringify(this.exportJson(), null, 4);
+            var f = File.buffer("Codebox Settings.json", code, "codebox-settings.json");
+            return f;
         }
     });
 

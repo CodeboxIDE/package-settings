@@ -1,10 +1,7 @@
 define([
-    "src/tab",
-    "src/manager",
-    "less!src/stylesheets/main.less"
-], function(Tab, Manager) {
+    "src/manager"
+], function(Manager) {
     var commands = codebox.require("core/commands");
-    var dialogs = codebox.require("utils/dialogs");
 
     var manager = new Manager();
 
@@ -15,12 +12,8 @@ define([
             "mod+,"
         ],
         run: function(args, context) {
-            return codebox.tabs.add(Tab, {
-                model: manager
-            }, {
-                type: "settings",
-                title: "Settings",
-                uniqueId: "settings"
+            return commands.run("file.open", {
+                file: manager.getFile()
             });
         }
     });
