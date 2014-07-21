@@ -20,4 +20,7 @@ define([
 
     // Exports settings manager
     codebox.settings = manager;
+
+    // Load settings
+    manager.load();
 });

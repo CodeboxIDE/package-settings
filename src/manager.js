@@ -2,13 +2,16 @@ define([
     "src/schema"
 ], function(Schema) {
     var _ = codebox.require("hr/utils");
+    var Q = codebox.require("hr/promise");
     var hr = codebox.require("hr/hr");
+    var rpc = codebox.require("core/rpc");
     var File = codebox.require("models/file");
 
     var Manager = hr.Class.extend({
         initialize: function() {
             Manager.__super__.initialize.apply(this, arguments);
 
+            this.settings = {};
             this.schemas = new (hr.Collection.extend({ model: Schema }));
         },
 
@@ -21,6 +24,10 @@ define([
             this.schemas.add({
                 'id': id,
                 'schema': infos
+            });
+            this.importJSON(this.settings, {
+                save: false,
+                silent: false
             });
 
             return this.schema(id);
@@ -40,10 +47,25 @@ define([
         },
 
         // Import
-        importJSON: function(data) {
-            this.schemas.each(function(schema) {
-                schema.data.set(data[schema.id] || {});
+        importJSON: function(data, options) {
+            options = _.defaults(options || {}, {
+                save: true,
+                silent: false
             });
+
+            this.settings = data;
+
+            this.schemas.each(function(schema) {
+                schema.data.set(this.settings[schema.id] || {}, {
+                    silent: options.silent
+                });
+            }, this);
+
+            if (options.save) {
+                return this.save();
+            }
+
+            return Q();
         },
 
         // Get file
@@ -60,6 +82,17 @@ define([
             });
 
             return f;
+        },
+
+        // Save settings on the server
+        save: function() {
+            return rpc.execute("settings/set", this.exportJson());
+        },
+
+        // Load settings from the server
+        load: function() {
+            return rpc.execute("settings/get")
+            .then(_.partialRight(this.importJSON, { save: false }).bind(this));
         }
     });
 
