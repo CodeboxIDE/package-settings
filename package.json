@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "Settings manager",
     "main": "src/index",
-    "node": "lib/main",
     "engines": {
         "codebox": ">=1.0.0"
     },
