@@ -10,15 +10,17 @@ define(function() {
 
             this.form = new FormView({
                 schema: codebox.settings.toSchema(),
-                values: codebox.settings.exportJson()
-            })
-        },
+                values: codebox.settings.exportJson(),
+                submit: "Save Settings"
+            });
 
-        templateContext: function() {
-            return {
-                models: this.model.models,
-                values: this.model.toJSON()
-            };
+            this.listenTo(this.form, "submit", function(data) {
+                console.log("save ", data);
+                codebox.settings.importJSON(data);
+            });
+
+            this.form.update();
+            this.form.appendTo(this);
         }
     });
 
