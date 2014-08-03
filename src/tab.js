@@ -1,6 +1,7 @@
 define([
     "text!src/templates/form.html"
 ], function(templateForm) {
+    var _ = codebox.require("hr/utils");
     var hr = codebox.require("hr/hr");
     var commands = codebox.require("core/commands");
     var FormView = codebox.require("views/form");
@@ -19,6 +20,10 @@ define([
             this.form = new FormView({
                 schema: codebox.settings.toSchema(),
                 values: codebox.settings.exportJson()
+            });
+
+            this.listenTo(codebox.settings, "change", function() {
+                _.defer(this.form.setValues.bind(this.form), codebox.settings.exportJson());
             });
         },
 
@@ -40,7 +45,6 @@ define([
             if (e) e.preventDefault();
 
             var data = this.form.getValues();
-            console.log("submit", data);
             codebox.settings.importJSON(data);
         },
 
