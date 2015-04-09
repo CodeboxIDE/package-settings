@@ -1,18 +1,19 @@
-define([
-    "src/tab",
-    "less!src/stylesheets/main.less"
-], function(Tab) {
-    var commands = codebox.require("core/commands");
+require("./stylesheets/main.less");
 
-    // Modify current command to open settings
-    var openSettings = commands.get("settings.open");
-    var baseRunner = openSettings.get("run");
+var Tab = require("./tab");
 
-    openSettings.set("run", function() {
-        return codebox.tabs.add(Tab, {}, {
-            uniqueId: "settings",
-            type: "settings",
-            title: "Settings"
-        });
+var commands = codebox.require("core/commands");
+
+
+// Modify current command to open settings
+var openSettings = commands.get("settings.open");
+var baseRunner = openSettings.get("run");
+
+openSettings.set("run", function() {
+    console.log("run command settings");
+    return codebox.tabs.add(Tab, {}, {
+        uniqueId: "settings",
+        type: "settings",
+        title: "Settings"
     });
 });

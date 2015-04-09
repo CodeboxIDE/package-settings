@@ -2,11 +2,23 @@
     "name": "settings",
     "version": "1.0.0",
     "description": "Settings manager",
-    "main": "src/index",
+    "browser": "./src/index.js",
     "engines": {
         "codebox": ">=1.0.0"
     },
     "packageDependencies": {
         "tabs": "CodeboxIDE/package-tabs"
+    },
+    "dependencies": {
+        "stringify": "3.1.0"
+    },
+    "browserify": {
+        "transform": [
+            [
+                "stringify", {
+                    "extensions": [".html"]
+                }
+            ]
+        ]
     }
 }

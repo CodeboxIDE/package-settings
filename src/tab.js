@@ -1,62 +1,60 @@
-define([
-    "text!src/templates/form.html"
-], function(templateForm) {
-    var _ = codebox.require("hr/utils");
-    var hr = codebox.require("hr/hr");
-    var commands = codebox.require("core/commands");
-    var FormView = codebox.require("views/form");
+var templateForm = require("./templates/form.html");
 
-    var Tab = codebox.tabs.Panel.extend({
-        className: "component-settings",
-        template: templateForm,
-        events: {
-            "click .do-submit": "onSubmit",
-            "click .do-open-json": "onOpenJson"
-        },
+var _ = codebox.require("hr.utils");
+var commands = codebox.require("core/commands");
+var FormView = codebox.require("views/form");
+var View = codebox.require("hr.view");
 
-        initialize: function() {
-            Tab.__super__.initialize.apply(this, arguments);
+var Tab = codebox.tabs.Panel.inherit(View.Template).extend({
+    className: "component-settings",
+    template: templateForm,
+    events: {
+        "click .do-submit": "onSubmit",
+        "click .do-open-json": "onOpenJson"
+    },
 
-            this.form = new FormView({
-                schema: codebox.settings.toSchema(),
-                values: codebox.settings.exportJson()
-            });
+    initialize: function() {
+        Tab.__super__.initialize.apply(this, arguments);
 
-            this.listenTo(codebox.settings, "change", function() {
-                _.defer(this.form.setValues.bind(this.form), codebox.settings.exportJson());
-            });
-        },
+        this.form = new FormView({
+            schema: codebox.settings.toSchema(),
+            values: codebox.settings.exportJson()
+        });
 
-        render: function() {
-            this.form.detach();
-            this.form.update();
+        this.listenTo(codebox.settings, "change", function() {
+            _.defer(this.form.setValues.bind(this.form), codebox.settings.exportJson());
+        });
+    },
 
-            return Tab.__super__.render.apply(this, arguments);
-        },
+    render: function() {
+        this.form.detach();
+        this.form.update();
 
-        finish: function() {
-            this.form.$el.appendTo(this.$(".form-content"));
+        return Tab.__super__.render.apply(this, arguments);
+    },
 
-            return Tab.__super__.finish.apply(this, arguments);
-        },
+    finish: function() {
+        this.form.$el.appendTo(this.$(".form-content"));
 
-        // Submit form
-        onSubmit: function(e) {
-            if (e) e.preventDefault();
+        return Tab.__super__.finish.apply(this, arguments);
+    },
 
-            var data = this.form.getValues();
-            codebox.settings.importJSON(data);
-        },
+    // Submit form
+    onSubmit: function(e) {
+        if (e) e.preventDefault();
 
-        // Open as json
-        onOpenJson: function(e) {
-            if (e) e.preventDefault();
+        var data = this.form.getValues();
+        codebox.settings.importJSON(data);
+    },
 
-            return commands.run("file.open", {
-                file: codebox.settings.getFile()
-            });
-        }
-    });
+    // Open as json
+    onOpenJson: function(e) {
+        if (e) e.preventDefault();
 
-    return Tab;
+        return commands.run("file.open", {
+            file: codebox.settings.getFile()
+        });
+    }
 });
+
+module.exports = Tab;
