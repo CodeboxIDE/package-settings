@@ -6,9 +6,6 @@
     "engines": {
         "codebox": ">=1.0.0"
     },
-    "packageDependencies": {
-        "tabs": "CodeboxIDE/package-tabs"
-    },
     "dependencies": {
         "stringify": "3.1.0"
     },

@@ -5,16 +5,18 @@ var commands = codebox.require("core/commands");
 var FormView = codebox.require("views/form");
 var View = codebox.require("hr.view");
 
-var Tab = codebox.tabs.Panel.inherit(View.Template).extend({
+var Dialog = View.Template.extend({
+    tagName: "div",
     className: "component-settings",
     template: templateForm,
     events: {
-        "click .do-submit": "onSubmit",
-        "click .do-open-json": "onOpenJson"
+        "click .do-submit": "doSubmit",
+        "click .do-open-json": "doOpenJson",
+        "click .do-close": "doClose"
     },
 
     initialize: function() {
-        Tab.__super__.initialize.apply(this, arguments);
+        Dialog.__super__.initialize.apply(this, arguments);
 
         this.form = new FormView({
             schema: codebox.settings.toSchema(),
@@ -30,31 +32,41 @@ var Tab = codebox.tabs.Panel.inherit(View.Template).extend({
         this.form.detach();
         this.form.update();
 
-        return Tab.__super__.render.apply(this, arguments);
+        return Dialog.__super__.render.apply(this, arguments);
     },
 
     finish: function() {
         this.form.$el.appendTo(this.$(".form-content"));
 
-        return Tab.__super__.finish.apply(this, arguments);
+        return Dialog.__super__.finish.apply(this, arguments);
     },
 
     // Submit form
-    onSubmit: function(e) {
+    doSubmit: function(e) {
         if (e) e.preventDefault();
 
         var data = this.form.getValues();
         codebox.settings.importJSON(data);
+        this.parent.close(e);
     },
 
     // Open as json
-    onOpenJson: function(e) {
+    doOpenJson: function(e) {
+        var that = this;
         if (e) e.preventDefault();
 
         return commands.run("file.open", {
             file: codebox.settings.getFile()
+        })
+        .then(function() {
+            that.parent.close();
         });
+    },
+
+    // Close dialog
+    doClose: function(e) {
+        this.parent.close(e);
     }
 });
 
-module.exports = Tab;
+module.exports = Dialog;

@@ -1,19 +1,16 @@
 require("./stylesheets/main.less");
 
-var Tab = require("./tab");
+var Dialog = require("./dialog");
 
 var commands = codebox.require("core/commands");
-
+var dialogs = codebox.require("utils/dialogs");
 
 // Modify current command to open settings
 var openSettings = commands.get("settings.open");
 var baseRunner = openSettings.get("run");
 
 openSettings.set("run", function() {
-    console.log("run command settings");
-    return codebox.tabs.add(Tab, {}, {
-        uniqueId: "settings",
-        type: "settings",
-        title: "Settings"
+    return dialogs.open(Dialog, {
+        size: "large"
     });
 });
